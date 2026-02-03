@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "ETHEREAL",
+    "slug": "ethereal-v7",
+    "version": "7.0.0",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "package": "com.ethereal.luxe",
+      "permissions": ["VIBRATE", "RECORD_AUDIO"]
+    },
+    "plugins": []
+  }
+}
