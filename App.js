@@ -161,9 +161,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+          <Stack.Screen name="MainTabs" component={MainTabs} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
@@ -181,6 +181,6 @@ const styles = StyleSheet.create({
   goldButton: { marginTop: 10, borderRadius: 25, overflow: 'hidden' },
   goldButtonGradient: { paddingVertical: 15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   goldButtonText: { color: '#000', fontWeight: 'bold', marginRight: 10 },
-  voiceCircle: { width: 80, height: 80, borderRadius: 40, borderLineWidth: 1, borderColor: THEME.colors.gold, alignSelf: 'center', marginTop: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(212,175,55,0.05)' },
+  voiceCircle: { width: 80, height: 80, borderRadius: 40, borderWidth: 1, borderColor: THEME.colors.gold, alignSelf: 'center', marginTop: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(212,175,55,0.05)' },
   tabBar: { backgroundColor: '#000', borderTopWidth: 0, height: 85 }
 });
