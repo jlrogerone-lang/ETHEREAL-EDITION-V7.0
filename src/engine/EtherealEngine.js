@@ -14,7 +14,6 @@
 import * as Repository from '../services/LayeringRepository';
 import * as InventoryManager from '../services/InventoryManager';
 import * as FiscalCalculator from './FiscalCalculator';
-import * as LayeringAlgorithm from './LayeringAlgorithm';
 import { PERFUME_INVENTORY, getPerfumeById, getCollectionValue } from '../data/perfumeInventory';
 import { NICHE_REFERENCES, findBestNicheMatches, getAverageNichePrice } from '../data/nicheReferences';
 import { OlfactoryFamily, ProtocolTier } from '../data/models';

@@ -12,13 +12,12 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  FlatList,
   RefreshControl,
   Alert,
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Gem, Plus, Minus, Search, X } from 'lucide-react-native';
+import { Plus, Minus, Search, X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import {
   Background,
@@ -54,16 +53,16 @@ export default function CavaScreen() {
     loadData();
   }, [initialized, inventory]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     const grouped = await getInventoryByFamily();
     setGroupedInventory(grouped);
-  };
+  }, [getInventoryByFamily]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refreshInventory();
     setRefreshing(false);
-  }, []);
+  }, [refreshInventory]);
 
   const openAddPanel = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);

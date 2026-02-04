@@ -269,7 +269,7 @@ export async function getStorageUsage() {
 
   for (const key of etherealKeys) {
     const value = await AsyncStorage.getItem(key);
-    const bytes = value ? new Blob([value]).size : 0;
+    const bytes = value ? value.length * 2 : 0;
     totalBytes += bytes;
 
     // Agrupar por categoría

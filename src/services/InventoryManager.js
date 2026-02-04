@@ -10,7 +10,7 @@
  */
 
 import * as Repository from './LayeringRepository';
-import { PERFUME_INVENTORY, PERFUME_MAP, getPerfumeById, getPerfumesByFamily, getPerfumesByHouse } from '../data/perfumeInventory';
+import { PERFUME_INVENTORY, getPerfumeById } from '../data/perfumeInventory';
 import { OlfactoryFamily } from '../data/models';
 
 // ══════════════════════════════════════════════════════

@@ -12,10 +12,9 @@
  */
 
 import * as DB from './LayeringDatabase';
-import { PERFUME_INVENTORY, PERFUME_MAP, getPerfumeById } from '../data/perfumeInventory';
+import { PERFUME_INVENTORY, getPerfumeById } from '../data/perfumeInventory';
 import { generarEnciclopediaMagna, sincronizarConInventario, buscarProtocolos } from '../engine/LayeringAlgorithm';
 import { generarResumenAhorro, generarInformeFinanciero } from '../engine/FiscalCalculator';
-import { protocolToJSON, protocolFromJSON, createLayeringProtocol } from '../data/models';
 
 // ── CACHE EN MEMORIA ──────────────────────────────────
 

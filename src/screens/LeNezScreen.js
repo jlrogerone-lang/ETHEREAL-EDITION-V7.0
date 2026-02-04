@@ -6,7 +6,7 @@
  * UI INMUTABLE: se mantiene el círculo de voz y LuxuryCard.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -32,16 +32,28 @@ export default function LeNezScreen({ navigation }) {
   const [isListening, setIsListening] = useState(false);
   const [recommendation, setRecommendation] = useState(null);
   const [recentProtocols, setRecentProtocols] = useState([]);
+  const timerRef = useRef(null);
+
+  const loadRecent = useCallback(async () => {
+    const protocols = await loadProtocols({ ordenarPor: 'compatibilidad' });
+    setRecentProtocols(protocols.slice(0, 3));
+  }, [loadProtocols]);
 
   useEffect(() => {
     if (!initialized) return;
     loadRecent();
-  }, [initialized]);
+  }, [initialized, loadRecent]);
 
-  const loadRecent = async () => {
-    const protocols = await loadProtocols({ ordenarPor: 'compatibilidad' });
-    setRecentProtocols(protocols.slice(0, 3));
-  };
+  // Cleanup timer and speech on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      Speech.stop();
+    };
+  }, []);
 
   const startVoice = async () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -54,7 +66,7 @@ export default function LeNezScreen({ navigation }) {
       );
 
       // Simular recomendación del motor tras "escuchar"
-      setTimeout(async () => {
+      timerRef.current = setTimeout(async () => {
         const protocols = await loadProtocols({ ordenarPor: 'ahorro' });
         if (protocols.length > 0) {
           const randomIdx = Math.floor(Math.random() * Math.min(10, protocols.length));
@@ -68,8 +80,13 @@ export default function LeNezScreen({ navigation }) {
             { language: 'es-ES', rate: 0.85 }
           );
         }
+        timerRef.current = null;
       }, 3000);
     } else {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
       Speech.stop();
       setIsListening(false);
     }

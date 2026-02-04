@@ -15,7 +15,6 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Gem, TrendingUp, Layers, Star } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import {
   Background,
@@ -48,18 +47,18 @@ export default function HomeScreen({ navigation }) {
     loadDashboard();
   }, [initialized]);
 
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
     await Promise.all([refreshStats(), loadSavings()]);
     const protocols = await loadProtocols({ ordenarPor: 'compatibilidad' });
     setTopProtocols(protocols.slice(0, 5));
-  };
+  }, [refreshStats, loadSavings, loadProtocols]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await loadDashboard();
     setRefreshing(false);
-  }, []);
+  }, [loadDashboard]);
 
   if (!initialized || (loading && !refreshing)) {
     return <LoadingOverlay message="Inicializando motor..." />;

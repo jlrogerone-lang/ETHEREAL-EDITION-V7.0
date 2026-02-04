@@ -16,7 +16,6 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { TrendingUp, DollarSign, Clock, Star } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import {
   Background,
@@ -45,18 +44,18 @@ export default function OracleScreen({ navigation }) {
     loadData();
   }, [initialized]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     await loadSavings();
     const r = await loadFinancialReport();
     setReport(r);
-  };
+  }, [loadSavings, loadFinancialReport]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await loadData();
     setRefreshing(false);
-  }, []);
+  }, [loadData]);
 
   const totalSaved = savingsSummary?.totalAhorrado || 0;
   const totalSpent = savingsSummary?.totalGastado || 0;
@@ -132,7 +131,7 @@ export default function OracleScreen({ navigation }) {
           <View style={styles.nicheRow}>
             <View style={styles.nicheItem}>
               <Text style={styles.nicheLabel}>Valor Nicho Total</Text>
-              <Text style={styles.nicheValue}>{nicheValue.toLocaleString()}€</Text>
+              <Text style={styles.nicheValue}>{Math.round(nicheValue).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}€</Text>
               <Text style={styles.nicheDesc}>
                 Suma de todos los referentes nicho emulables
               </Text>
@@ -141,7 +140,7 @@ export default function OracleScreen({ navigation }) {
             <View style={styles.nicheItem}>
               <Text style={styles.nicheLabel}>Ahorro Máximo Posible</Text>
               <Text style={[styles.nicheValue, { color: THEME.colors.success }]}>
-                {maxSavings.toLocaleString()}€
+                {Math.round(maxSavings).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}€
               </Text>
               <Text style={styles.nicheDesc}>
                 Si usases todos los protocolos activos

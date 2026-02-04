@@ -20,14 +20,11 @@ import { Search, X, Filter, Heart } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import {
   Background,
-  LuxuryCard,
   TierBadge,
-  SectionHeader,
   EmptyState,
   THEME,
 } from '../components/ui/SharedComponents';
 import { useLayering } from '../context/LayeringContext';
-import { OlfactoryFamily, ProtocolTier } from '../data/models';
 
 const PAGE_SIZE = 20;
 

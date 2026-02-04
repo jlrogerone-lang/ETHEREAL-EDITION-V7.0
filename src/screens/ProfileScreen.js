@@ -15,15 +15,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  User,
-  Database,
-  Download,
-  Upload,
-  RefreshCw,
-  Shield,
-  Info,
-} from 'lucide-react-native';
+import { Download, RefreshCw } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import {
   Background,
@@ -54,17 +46,17 @@ export default function ProfileScreen() {
     loadData();
   }, [initialized]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     await refreshStats();
     const sugs = await suggestPerfumesToBuy(3);
     setSuggestions(sugs);
-  };
+  }, [refreshStats, suggestPerfumesToBuy]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await loadData();
     setRefreshing(false);
-  }, []);
+  }, [loadData]);
 
   const handleExport = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
