@@ -5,7 +5,7 @@
  * ahorro fiscal acumulado y protocolos recomendados.
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -25,7 +25,17 @@ import {
   THEME,
   LoadingOverlay,
 } from '../components/ui/SharedComponents';
+import GlassCard from '../components/ui/GlassCard';
 import { useLayering } from '../context/LayeringContext';
+
+// ── L'ORACLE: Algoritmo de Perfume del Día ──
+function computeDailyOracle(protocols) {
+  if (!protocols || protocols.length === 0) return null;
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  const candidates = protocols.slice(0, 20);
+  return candidates[seed % candidates.length];
+}
 
 export default function HomeScreen({ navigation }) {
   const {
@@ -40,7 +50,10 @@ export default function HomeScreen({ navigation }) {
   } = useLayering();
 
   const [topProtocols, setTopProtocols] = useState([]);
+  const [allProtocols, setAllProtocols] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  const dailyOracle = useMemo(() => computeDailyOracle(allProtocols), [allProtocols]);
 
   useEffect(() => {
     if (!initialized) return;
@@ -50,6 +63,7 @@ export default function HomeScreen({ navigation }) {
   const loadDashboard = useCallback(async () => {
     await Promise.all([refreshStats(), loadSavings()]);
     const protocols = await loadProtocols({ ordenarPor: 'compatibilidad' });
+    setAllProtocols(protocols);
     setTopProtocols(protocols.slice(0, 5));
   }, [refreshStats, loadSavings, loadProtocols]);
 
@@ -85,6 +99,46 @@ export default function HomeScreen({ navigation }) {
         }
       >
         <Text style={styles.headerTitle}>DASHBOARD</Text>
+
+        {/* ── L'ORACLE: PERFUME DEL DÍA ── */}
+        {dailyOracle && (
+          <TouchableOpacity
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              navigation.navigate('ProtocolDetail', { protocolId: dailyOracle.id });
+            }}
+            activeOpacity={0.7}
+          >
+            <GlassCard title="L'Oracle" subtitle="Perfume du Jour" accentColor={THEME.colors.gold}>
+              <Text style={styles.oracleName}>{dailyOracle.nombreOperacion}</Text>
+              <Text style={styles.oracleCat}>{dailyOracle.categoria}</Text>
+              <View style={styles.oracleRow}>
+                <Text style={styles.oracleStat}>
+                  Ahorro: +{dailyOracle.analisisCoste.ahorroGenerado.toFixed(0)}€
+                </Text>
+                <TierBadge tier={dailyOracle.compatibilidadQuimica.tier} size="small" />
+              </View>
+            </GlassCard>
+          </TouchableOpacity>
+        )}
+
+        {/* ── ACCESOS RÁPIDOS OMNI ── */}
+        <View style={styles.quickAccessRow}>
+          <TouchableOpacity
+            style={styles.quickAccessBtn}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigation.navigate('Academie'); }}
+          >
+            <Text style={styles.quickAccessIcon}>🎓</Text>
+            <Text style={styles.quickAccessLabel}>L'Académie</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.quickAccessBtn}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigation.navigate('Sommelier'); }}
+          >
+            <Text style={styles.quickAccessIcon}>👔</Text>
+            <Text style={styles.quickAccessLabel}>Sommelier</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* ── RESUMEN FISCAL ── */}
         <LuxuryCard title="Ahorro Fiscal" subtitle="Auditoría acumulada">
@@ -281,5 +335,52 @@ const styles = StyleSheet.create({
     color: THEME.colors.success,
     fontSize: 13,
     fontWeight: 'bold',
+  },
+  oracleName: {
+    color: THEME.colors.gold,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  oracleCat: {
+    color: THEME.colors.textDim,
+    fontSize: 10,
+    letterSpacing: 2,
+    textAlign: 'center',
+    marginTop: 2,
+    marginBottom: 10,
+  },
+  oracleRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
+  oracleStat: {
+    color: THEME.colors.success || '#4CAF50',
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  quickAccessRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 12,
+    marginBottom: 20,
+  },
+  quickAccessBtn: {
+    flex: 1,
+    backgroundColor: THEME.colors.cardBg,
+    borderWidth: 1,
+    borderColor: THEME.colors.cardBorder,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  quickAccessIcon: { fontSize: 22, marginBottom: 4 },
+  quickAccessLabel: {
+    color: THEME.colors.gold,
+    fontSize: 10,
+    letterSpacing: 1,
+    fontWeight: '600',
   },
 });

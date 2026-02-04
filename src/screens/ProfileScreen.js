@@ -25,9 +25,10 @@ import {
   SectionHeader,
   THEME,
 } from '../components/ui/SharedComponents';
+import RadarChart from '../components/ui/RadarChart';
 import { useLayering } from '../context/LayeringContext';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const {
     initialized,
     stats,
@@ -179,6 +180,22 @@ export default function ProfileScreen() {
           </LuxuryCard>
         )}
 
+        {/* ── ADN OLFATIVO (Radar Chart) ── */}
+        <LuxuryCard title="ADN Olfativo" subtitle="Tu perfil sensorial">
+          <RadarChart
+            data={{
+              floral: Math.min(100, (stats?.protocolos?.alpha || 0) * 2),
+              oriental: Math.min(100, (stats?.protocolos?.beta || 0) * 2),
+              amaderado: Math.min(100, (stats?.inventario?.totalPerfumes || 0) * 4),
+              fresco: Math.min(100, (stats?.uso?.totalUsos || 0) * 5),
+              citrico: Math.min(100, (stats?.favoritos || 0) * 10),
+              fougere: Math.min(100, (stats?.protocolos?.gamma || 0) * 2),
+            }}
+            size={220}
+            title="PERFIL OLFATIVO"
+          />
+        </LuxuryCard>
+
         {/* ── SUGERENCIAS DE COMPRA ── */}
         {suggestions.length > 0 && (
           <>
@@ -228,7 +245,7 @@ export default function ProfileScreen() {
             L'ESSENCE DU LUXE
           </Text>
           <Text style={styles.versionNumber}>
-            ETHEREAL EDITION v7.0.0
+            ETHEREAL EDITION OMNI v8.0.0
           </Text>
           <Text style={styles.versionSub}>
             Motor de Layering | 6 Pilares | Auditoría Fiscal

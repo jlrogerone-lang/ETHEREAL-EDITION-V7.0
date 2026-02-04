@@ -1,39 +1,51 @@
 {
   "expo": {
-    "name": "ETHEREAL",
-    "slug": "ethereal-v7",
-    "version": "7.0.0",
+    "name": "L'Essence du Luxe",
+    "slug": "ethereal-omni",
+    "version": "8.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "icon": "./assets/icon.png",
     "splash": {
-      "backgroundColor": "#000000"
+      "backgroundColor": "#050505"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ethereal.luxe",
+      "bundleIdentifier": "com.essenceduluxe.app",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Para entrada de voz en Le Nez AI"
+        "NSMicrophoneUsageDescription": "Para entrada de voz en Le Nez AI",
+        "NSCameraUsageDescription": "Para Le Sommelier Visuel y escáner OCR",
+        "NSPhotoLibraryUsageDescription": "Para seleccionar fotos de outfit",
+        "NSFaceIDUsageDescription": "Autenticación biométrica segura"
       }
     },
     "android": {
-      "package": "com.ethereal.luxe",
-      "versionCode": 1,
+      "package": "com.essenceduluxe.app",
+      "versionCode": 8,
       "adaptiveIcon": {
-        "backgroundColor": "#000000"
+        "backgroundColor": "#050505"
       },
       "permissions": [
         "VIBRATE",
-        "RECORD_AUDIO"
+        "RECORD_AUDIO",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "RECEIVE_BOOT_COMPLETED"
       ]
     },
     "plugins": [
-      "expo-av"
+      "expo-av",
+      "expo-camera",
+      "expo-image-picker",
+      "expo-notifications",
+      "expo-local-authentication"
     ],
     "extra": {
       "eas": {
-        "projectId": "ethereal-v7"
+        "projectId": "ethereal-omni"
       }
     }
   }
