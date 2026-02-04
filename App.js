@@ -1,16 +1,16 @@
 /**
- * ETHEREAL EDITION v7.0 — GOLDEN MASTER
- * ========================================
+ * ETHEREAL EDITION v8.0 OMNI — GOLDEN MASTER
+ * =============================================
  * Punto de entrada principal. Conecta el motor de layering
  * (6 Pilares, 500 protocolos, Auditoría Fiscal) con la UI.
  *
  * ARQUITECTURA:
+ * - ErrorBoundary global (Self-Healing Navigation)
  * - LayeringProvider envuelve toda la app (ViewModel global)
- * - Stack Navigator: Login → MainTabs → ProtocolDetail / Biblio
+ * - Stack Navigator: Login → MainTabs → Detail screens
  * - Tab Navigator: Home, Cava, LeNez, Oracle, Profile
  *
- * UI INMUTABLE: Los componentes visuales (Background, LuxuryCard,
- * GoldButton, THEME) se importan desde SharedComponents.
+ * UI: Componentes importados desde SharedComponents.
  */
 
 import 'react-native-gesture-handler';
@@ -21,6 +21,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Home, Gem, Sparkles, Eye, User } from 'lucide-react-native';
+
+// --- SELF-HEALING NAVIGATION ---
+import ErrorBoundary from './src/components/ui/ErrorBoundary';
 
 // --- MOTOR DE LAYERING ---
 import { LayeringProvider } from './src/context/LayeringContext';
@@ -37,6 +40,10 @@ import OracleScreen from './src/screens/OracleScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import ProtocolDetailScreen from './src/screens/ProtocolDetailScreen';
 
+// --- PANTALLAS OMNI v8 ---
+import AcademieScreen from './src/screens/AcademieScreen';
+import SommelierScreen from './src/screens/SommelierScreen';
+
 // ==========================================
 // LOGIN SCREEN (UI INMUTABLE)
 // ==========================================
@@ -47,7 +54,7 @@ const LoginScreen = ({ navigation }) => (
     <Background />
     <Text style={styles.brandTitle}>L'ESSENCE DU LUXE</Text>
     <View style={{width:'80%'}}>
-      <LuxuryCard title="Bienvenue" subtitle="ETHEREAL v7.0">
+      <LuxuryCard title="Bienvenue" subtitle="ETHEREAL OMNI v8.0">
          <GoldButton text="ENTRAR" onPress={() => navigation.replace('MainTabs')} />
       </LuxuryCard>
     </View>
@@ -77,24 +84,28 @@ const MainTabs = () => (
 );
 
 // ==========================================
-// APP ROOT — GOLDEN MASTER
+// APP ROOT — OMNI v8.0
 // ==========================================
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <LayeringProvider>
-        <NavigationContainer>
-          <StatusBar barStyle="light-content" backgroundColor="#000000" />
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="MainTabs" component={MainTabs} />
-            <Stack.Screen name="ProtocolDetail" component={ProtocolDetailScreen} options={{ presentation: 'card', gestureEnabled: true }} />
-            <Stack.Screen name="Biblio" component={BiblioScreen} options={{ presentation: 'card', gestureEnabled: true }} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </LayeringProvider>
-    </SafeAreaProvider>
+    <ErrorBoundary>
+      <SafeAreaProvider>
+        <LayeringProvider>
+          <NavigationContainer>
+            <StatusBar barStyle="light-content" backgroundColor="#000000" />
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="MainTabs" component={MainTabs} />
+              <Stack.Screen name="ProtocolDetail" component={ProtocolDetailScreen} options={{ presentation: 'card', gestureEnabled: true }} />
+              <Stack.Screen name="Biblio" component={BiblioScreen} options={{ presentation: 'card', gestureEnabled: true }} />
+              <Stack.Screen name="Academie" component={AcademieScreen} options={{ presentation: 'card', gestureEnabled: true }} />
+              <Stack.Screen name="Sommelier" component={SommelierScreen} options={{ presentation: 'card', gestureEnabled: true }} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </LayeringProvider>
+      </SafeAreaProvider>
+    </ErrorBoundary>
   );
 }
 
