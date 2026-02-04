@@ -1,17 +1,50 @@
-﻿import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, StatusBar, Platform, TouchableOpacity, Image } from 'react-native';
+/**
+ * ETHEREAL EDITION v7.0 — GOLDEN MASTER
+ * ========================================
+ * Punto de entrada principal. Conecta el motor de layering
+ * (6 Pilares, 500 protocolos, Auditoría Fiscal) con la UI.
+ *
+ * ARQUITECTURA:
+ * - LayeringProvider envuelve toda la app (ViewModel global)
+ * - Stack Navigator: Login → MainTabs → ProtocolDetail / Biblio
+ * - Tab Navigator: Home, Cava, LeNez, Oracle, Profile
+ *
+ * UI INMUTABLE: Los componentes visuales (Background, LuxuryCard,
+ * GoldButton, THEME) se mantienen idénticos al diseño aprobado.
+ *
+ * BUGS CORREGIDOS:
+ * - MainTabNavigator → MainTabs (referencia inexistente)
+ * - borderLineWidth → borderWidth (propiedad inexistente en RN)
+ */
+
+import React from 'react';
+import { View, Text, StyleSheet, StatusBar, Platform, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Home, Search, Gem, Sparkles, Eye, Award, User, ArrowRight, ChevronLeft } from 'lucide-react-native';
+import { Home, Gem, Sparkles, Eye, User, ArrowRight } from 'lucide-react-native';
 
-// --- NUEVOS CONTROLADORES DE HARDWARE v7 ---
+// --- CONTROLADORES DE HARDWARE v7 ---
 import * as Haptics from 'expo-haptics'; // Le Toucher
-import * as Speech from 'expo-speech';   // La Voix
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Le Bunker
+
+// --- MOTOR DE LAYERING ---
+import { LayeringProvider } from './src/context/LayeringContext';
+
+// --- PANTALLAS CON LÓGICA VIVA ---
+import HomeScreen from './src/screens/HomeScreen';
+import CavaScreen from './src/screens/CavaScreen';
+import BiblioScreen from './src/screens/BiblioScreen';
+import LeNezScreen from './src/screens/LeNezScreen';
+import OracleScreen from './src/screens/OracleScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import ProtocolDetailScreen from './src/screens/ProtocolDetailScreen';
+
+// ==========================================
+// THEME SAGRADO (INMUTABLE)
+// ==========================================
 
 const THEME = {
   colors: { gold: '#D4AF37', goldDim: '#8A7120', goldLight: '#F8E79A', bg: '#000000', text: '#FFFFFF', textDim: '#666666' },
@@ -19,7 +52,7 @@ const THEME = {
 };
 
 // ==========================================
-// COMPONENTES CON LÓGICA ACTIVA
+// COMPONENTES UI ORIGINALES (INMUTABLES)
 // ==========================================
 
 const Background = () => <LinearGradient colors={['#000000', '#1A1105', '#000000']} style={StyleSheet.absoluteFillObject} />;
@@ -56,11 +89,12 @@ const GoldButton = ({ text, onPress }) => {
 };
 
 // ==========================================
-// PANTALLAS FUNCIONALES
+// LOGIN SCREEN (UI INMUTABLE)
 // ==========================================
 
 const LoginScreen = ({ navigation }) => (
   <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+    <StatusBar barStyle="light-content" backgroundColor="#000000" />
     <Background />
     <Text style={styles.brandTitle}>L'ESSENCE DU LUXE</Text>
     <View style={{width:'80%'}}>
@@ -71,76 +105,6 @@ const LoginScreen = ({ navigation }) => (
   </View>
 );
 
-const LeNezScreen = () => {
-  const [isListening, setIsListening] = useState(false);
-
-  const startVoice = () => {
-    // ACTIVACIÓN LA VOIX
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    setIsListening(!isListening);
-    if(!isListening) {
-        Speech.speak("Monsieur, mis sensores están listos. ¿Qué aroma buscamos?", { language: 'es-ES', rate: 0.85 });
-    }
-  };
-
-  return (
-    <SafeAreaView style={{flex:1}}>
-      <Background />
-      <View style={{flex:1, padding:20, justifyContent:'flex-end'}}>
-        <LuxuryCard title="Le Nez" subtitle="Artificial Intelligence">
-          <Text style={{color:THEME.colors.gold, fontStyle:'italic', textAlign:'center'}}>
-            {isListening ? "Escuchando su voz..." : "Toque el sensor para hablar."}
-          </Text>
-        </LuxuryCard>
-        <TouchableOpacity onPress={startVoice} style={[styles.voiceCircle, isListening && {borderColor: THEME.colors.goldLight}]}>
-           <Sparkles color={THEME.colors.gold} size={32} />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
-};
-
-const CavaScreen = () => {
-  const [count, setCount] = useState(0);
-
-  // ACTIVACIÓN LE BUNKER (Persistencia)
-  useEffect(() => {
-    const load = async () => {
-      const val = await AsyncStorage.getItem('@cava_count');
-      if (val) setCount(parseInt(val));
-    };
-    load();
-  }, []);
-
-  const addPerfume = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    const newCount = count + 1;
-    setCount(newCount);
-    await AsyncStorage.setItem('@cava_count', newCount.toString());
-  };
-
-  return (
-    <SafeAreaView style={{flex:1}}>
-      <Background />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.headerTitle}>LE BUNKER</Text>
-        <LuxuryCard title="Inventario" subtitle="Colección Offline">
-           <Text style={{color:'#FFF', fontSize:40, textAlign:'center'}}>{count}</Text>
-           <Text style={{color:THEME.colors.gold, textAlign:'center', marginBottom:20}}>FRAGANCIAS GUARDADAS</Text>
-           <GoldButton text="AÑADIR A LA CAVA" onPress={addPerfume} />
-        </LuxuryCard>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-// Resto de pantallas simuladas para navegación...
-const HomeScreen = () => <View style={{flex:1}}><Background /><Text style={styles.headerTitle}>DASHBOARD</Text></View>;
-const BiblioScreen = () => <View style={{flex:1}}><Background /><Text style={styles.headerTitle}>BIBLIOTHÈQUE</Text></View>;
-const OracleScreen = () => <View style={{flex:1}}><Background /><Text style={styles.headerTitle}>L'ORACLE</Text></View>;
-const AcademyScreen = () => <View style={{flex:1}}><Background /><Text style={styles.headerTitle}>ACADEMY</Text></View>;
-const ProfileScreen = () => <View style={{flex:1}}><Background /><Text style={styles.headerTitle}>PROFIL</Text></View>;
-
 // ==========================================
 // NAVEGACIÓN
 // ==========================================
@@ -148,28 +112,46 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const MainTabs = () => (
-  <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: styles.tabBar, tabBarActiveTintColor: THEME.colors.gold }}>
+  <Tab.Navigator screenOptions={{
+    headerShown: false,
+    tabBarStyle: styles.tabBar,
+    tabBarActiveTintColor: THEME.colors.gold,
+    tabBarInactiveTintColor: THEME.colors.textDim,
+    tabBarLabelStyle: { fontSize: 9, letterSpacing: 1 },
+  }}>
     <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: ({color}) => <Home color={color} size={20} /> }} />
     <Tab.Screen name="Cava" component={CavaScreen} options={{ tabBarIcon: ({color}) => <Gem color={color} size={20} /> }} />
-    <Tab.Screen name="LeNez" component={LeNezScreen} options={{ tabBarIcon: ({color}) => <Sparkles color={color} size={24} /> }} />
+    <Tab.Screen name="LeNez" component={LeNezScreen} options={{ tabBarLabel: 'Le Nez', tabBarIcon: ({color}) => <Sparkles color={color} size={24} /> }} />
     <Tab.Screen name="Oracle" component={OracleScreen} options={{ tabBarIcon: ({color}) => <Eye color={color} size={20} /> }} />
     <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({color}) => <User color={color} size={20} /> }} />
   </Tab.Navigator>
 );
 
+// ==========================================
+// APP ROOT — GOLDEN MASTER
+// ==========================================
+
 export default function App() {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="MainTabs" component={MainTabNavigator} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <LayeringProvider>
+        <NavigationContainer>
+          <StatusBar barStyle="light-content" backgroundColor="#000000" />
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="MainTabs" component={MainTabs} />
+            <Stack.Screen name="ProtocolDetail" component={ProtocolDetailScreen} options={{ presentation: 'card', gestureEnabled: true }} />
+            <Stack.Screen name="Biblio" component={BiblioScreen} options={{ presentation: 'card', gestureEnabled: true }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </LayeringProvider>
     </SafeAreaProvider>
   );
 }
 
+// ==========================================
+// STYLES (IDÉNTICOS AL ORIGINAL)
+// ==========================================
 const styles = StyleSheet.create({
   scroll: { padding: 20 },
   headerTitle: { color: THEME.colors.gold, fontSize: 14, letterSpacing: 4, textAlign: 'center', marginVertical: 40 },
@@ -181,6 +163,6 @@ const styles = StyleSheet.create({
   goldButton: { marginTop: 10, borderRadius: 25, overflow: 'hidden' },
   goldButtonGradient: { paddingVertical: 15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   goldButtonText: { color: '#000', fontWeight: 'bold', marginRight: 10 },
-  voiceCircle: { width: 80, height: 80, borderRadius: 40, borderLineWidth: 1, borderColor: THEME.colors.gold, alignSelf: 'center', marginTop: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(212,175,55,0.05)' },
-  tabBar: { backgroundColor: '#000', borderTopWidth: 0, height: 85 }
+  voiceCircle: { width: 80, height: 80, borderRadius: 40, borderWidth: 1, borderColor: THEME.colors.gold, alignSelf: 'center', marginTop: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(212,175,55,0.05)' },
+  tabBar: { backgroundColor: '#000', borderTopWidth: 0, height: 85, paddingBottom: Platform.OS === 'ios' ? 20 : 8, paddingTop: 8 }
 });

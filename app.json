@@ -3,11 +3,38 @@
     "name": "ETHEREAL",
     "slug": "ethereal-v7",
     "version": "7.0.0",
+    "orientation": "portrait",
     "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "backgroundColor": "#000000"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ethereal.luxe",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Para entrada de voz en Le Nez AI"
+      }
+    },
     "android": {
       "package": "com.ethereal.luxe",
-      "permissions": ["VIBRATE", "RECORD_AUDIO"]
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#000000"
+      },
+      "permissions": [
+        "VIBRATE",
+        "RECORD_AUDIO"
+      ]
     },
-    "plugins": []
+    "plugins": [
+      "expo-av"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ethereal-v7"
+      }
+    }
   }
 }
